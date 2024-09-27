@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="todo-header">
+            <h2>TO DO LIST</h2>
+            <img src="https://i.pinimg.com/originals/d0/25/95/d02595bbfd3b1e16b3ad2eac4550d2df.gif" height="40px" />
+        </div>
+            <div class="todo-body">
+                <input
+                    type="text"
+                    id="todoText"
+                    class="to-do-input"
+                    placeholder="Add you item"
+                />
+                <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/plus.png" 
+                alt="plus"
+                id="AddUpdateClick"
+                onclick="CreateItem()"
+                />
+                </div>
+                <h5 id="alert"></h5>
+                <ul id="list-items" class="list-items">
+                </ul>
+                <button class="undo" id="undo" 
+                onclick="UndoItem()">UNDO</button>
+    </div>
+    <script type="text/javascript" src="script.js"></script>
+</body>
+
+</html>
