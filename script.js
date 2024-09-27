@@ -3,16 +3,16 @@ const todoInput = document.getElementById('todoText');
 const todoalert = document.getElementById('alert');
 const listItems = document.getElementById('list-items');
 const undo = document.getElementById('undo');
-let undoValue= '';
+let undoValue = '';
 
 function CreateItem() {
     const todovalue = todoInput.value;
-    console.log(todovalue);
+    //console.log(todovalue);
 
 
     if (todovalue.trim() === "") {
         todoalert.innerText = "please enter into your to do list";
-        console.log(todoalert);
+        //console.log(todoalert);
         return
     }
 
@@ -27,27 +27,22 @@ function CreateItem() {
 }
 
 listItems.addEventListener('click', (e) => {
-    console.log(e.target);
+    //console.log(e.target);
     if (e.target.tagName === 'LI') {
         e.stopPropagation();
-        e.target.classList.toggle("checked");
-        if (confirm("Are you sure you want to delete")) {
-            undoValue = e.target.textContent;
-            e.target.remove();
-            todoalert.innerText = "";
-        } else {
-            todoalert.innerText = "NOT DELETED";
-        }
+        //e.target.classList.toggle("checked");
+        undoValue = e.target.textContent;
+        e.target.remove();
     }
 });
 
-function UndoItem(){
-    undo.addEventListener('click', (e)=>{
-        if(undoValue != ""){
-        const li = document.createElement("li");
-        li.innerHTML = undoValue;
-        listItems.appendChild(li);
+function UndoItem() {
+    undo.addEventListener('click', (e) => {
+        if (undoValue != "") {
+            const li = document.createElement("li");
+            li.innerHTML = undoValue;
+            listItems.appendChild(li);
         }
-        undoValue="";
+        undoValue = "";
     });
 }
