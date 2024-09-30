@@ -19,7 +19,7 @@ body{
     background: #ffffff;
     border-radius: 10px;
     padding: 25px;
-    width: 525px;
+    width: 562px;
 }
 
 .todo-header{
@@ -126,4 +126,12 @@ ul li.archived::before{
 
 .hidden{
     display: none;
+}
+
+span{
+    background-color: rgb(0, 48, 48);
+    color :#ffffff;
+    border-radius: 19px;
+    padding: 12px;
+    padding-left: 18px;
 }

@@ -6,6 +6,7 @@ const undo = document.getElementById('undo');
 const archiveList = document.getElementById('archived');
 const archiveBlock = document.getElementById('todo-archive');
 const btnArchive= document.getElementById('toggle-archive');
+const tag = document.getElementById('todoTag');
 
 
 let undoValue = '';
@@ -14,6 +15,7 @@ let archivedList=[];
 
 function CreateItem() {
     const todovalue = todoInput.value;
+    const tagvalue= tag.value;
     //console.log(todovalue);
 
 
@@ -27,8 +29,15 @@ function CreateItem() {
     const li = document.createElement("li");
     // const itemstodo = `${todovalue}`;
     li.innerHTML = todovalue;
+    const span = document.createElement("span");
+
+    if(tagvalue !==''){
+        span.textContent = `${tagvalue}`;
+        li.appendChild(span);
+    }
 
     li.addEventListener('click',(e)=>{
+        li.removeChild(span);
         deleteTask(e);
     })
 
@@ -36,17 +45,28 @@ function CreateItem() {
     tasks.push(todovalue);
 
     todoInput.value = "";
+    tag.value ="";
 
 }
 
 function deleteTask(e){
-    const text = e.target.textContent
-        archivedList.push(text);
-        renderArchive();
+    const text = e.target.textContent;
+        // archivedList.push(text);
+        // renderArchive();
 
-        undoValue = text;
-        tasks = tasks.filter(task => task !== text)
-        e.target.remove();
+        // // undoValue = text;
+        // // tasks = tasks.filter(task => task !== text)
+        // // e.target.remove();
+        if (confirm("Are you sure you want to delete")) {
+            archivedList.push(text);
+            renderArchive();
+            undoValue = text;
+            tasks = tasks.filter(task => task !== text)
+            e.target.remove();
+            todoalert.innerText = "";
+        } else {
+            todoalert.innerText = "NOT DELETED";
+        }
 }
 
 
