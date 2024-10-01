@@ -5,17 +5,17 @@ const listItems = document.getElementById('list-items');
 const undo = document.getElementById('undo');
 const archiveList = document.getElementById('archived');
 const archiveBlock = document.getElementById('todo-archive');
-const btnArchive= document.getElementById('toggle-archive');
+const btnArchive = document.getElementById('toggle-archive');
 const tag = document.getElementById('todoTag');
 
 
 let undoValue = '';
-let tasks=[];
-let archivedList=[];
+let tasks = [];
+let archivedList = [];
 
 function CreateItem() {
     const todovalue = todoInput.value;
-    const tagvalue= tag.value;
+    const tagvalue = tag.value;
     //console.log(todovalue);
 
 
@@ -31,44 +31,61 @@ function CreateItem() {
     li.innerHTML = todovalue;
     const span = document.createElement("span");
 
-    if(tagvalue !==''){
+    if (tagvalue !== '') {
         span.textContent = `${tagvalue}`;
         li.appendChild(span);
     }
 
-    li.addEventListener('click',(e)=>{
+    const updButton = document.createElement("img");
+    updButton.classList.add("update-btn");
+    updButton.src = "images/pencil.png";
+    updButton.addEventListener('click', (e) => {
+        updateTask(e, todovalue, tagvalue)
+    });
+    li.appendChild(updButton);
+
+    const delButton = document.createElement("img");
+    delButton.classList.add("del-button");
+    delButton.src = "images/delete.png";
+    delButton.addEventListener('click', (e) => {
         li.removeChild(span);
+        li.removeChild(updButton);
         deleteTask(e);
-    })
+    });
+    li.appendChild(delButton);
 
     listItems.appendChild(li);
     tasks.push(todovalue);
 
     todoInput.value = "";
-    tag.value ="";
+    tag.value = "";
 
 }
 
-function deleteTask(e){
-    const text = e.target.textContent;
-        // archivedList.push(text);
-        // renderArchive();
-
-        // // undoValue = text;
-        // // tasks = tasks.filter(task => task !== text)
-        // // e.target.remove();
-        if (confirm("Are you sure you want to delete")) {
-            archivedList.push(text);
-            renderArchive();
-            undoValue = text;
-            tasks = tasks.filter(task => task !== text)
-            e.target.remove();
-            todoalert.innerText = "";
-        } else {
-            todoalert.innerText = "NOT DELETED";
-        }
+function deleteTask(e) {
+    const li = e.target.parentElement;
+    const text = li.textContent;
+    if (confirm("Are you sure you want to delete")) {
+        archivedList.push(text);
+        renderArchive();
+        undoValue = text;
+        tasks = tasks.filter(task => task !== text)
+        li.remove();
+        todoalert.innerText = "";
+    } else {
+        todoalert.innerText = "NOT DELETED";
+    }
 }
 
+function updateTask(e, oldValue, oldTagValue) {
+    // Populate the input fields with the current task's values
+    todoInput.value = oldValue;
+    tag.value = oldTagValue;
+
+    const li = e.target.parentElement;
+    li.remove();
+    tasks = tasks.filter(task => task !== oldValue);
+}
 
 function UndoItem() {
     undo.addEventListener('click', (e) => {
@@ -76,7 +93,7 @@ function UndoItem() {
             const li = document.createElement("li");
             li.innerHTML = undoValue;
 
-            li.addEventListener('click',(e)=>{
+            li.addEventListener('click', (e) => {
                 deleteTask(e);
             })
 
@@ -89,16 +106,16 @@ function UndoItem() {
     });
 }
 
-function renderArchive(){
-    archiveList.innerHTML="";
+function renderArchive() {
+    archiveList.innerHTML = "";
     archivedList.forEach(task => {
         const li = document.createElement("li");
-        li.innerHTML=task;
+        li.innerHTML = task;
         archiveList.appendChild(li);
     });
 }
 
-function ToggleArchive(){
+function ToggleArchive() {
     archiveBlock.classList.toggle('hidden');
 }
 
