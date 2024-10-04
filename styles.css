@@ -9,7 +9,7 @@
 
 body{
     justify-content: center;
-    background: #5a5657;
+    background:#5a5657;
     display: flex;
     align-items: center;
     min-height: 100vh;
@@ -19,7 +19,7 @@ body{
     background: #ffffff;
     border-radius: 10px;
     padding: 25px;
-    width: 562px;
+    width: 730px;
 }
 
 .todo-header{
