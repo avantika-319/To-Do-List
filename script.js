@@ -9,6 +9,8 @@ const btnArchive = document.getElementById('toggle-archive');
 const tag = document.getElementById('todoTag');
 const deadlineInput = document.getElementById('todoDeadline');
 
+const reminderSound = new Audio('notification.wav')
+
 let undoValue = '';
 let tasks = [];
 let archivedList = [];
@@ -33,7 +35,23 @@ function CreateItem() {
     }
 
     const li = document.createElement("li");
-    li.innerHTML = todovalue;
+
+    const checkbox = document.createElement("input");
+    checkbox.type="checkbox";
+    checkbox.name="task";
+    checkbox.value = todovalue;
+    checkbox.addEventListener('change', () => {
+        // Mark task as completed
+        if (checkbox.checked) {
+            li.style.textDecoration = "line-through"; 
+            li.style.color = "gray"; 
+        } else {
+            li.style.textDecoration = "none"; 
+            li.style.color = "black";
+        }
+    });
+    li.appendChild(checkbox);
+    li.appendChild(document.createTextNode(todovalue));
     
     const span = document.createElement("span");
     if (tagvalue !== '') {
@@ -45,15 +63,16 @@ function CreateItem() {
     if(deadlineValue !== '')
     {
         deadlineSpan.textContent =`${deadlineValue}`;
-        deadlineSpan.style.color = 'red';
+        deadlineSpan.style.color = 'green';
         li.appendChild(deadlineSpan);
+
+        setReminder(deadlineValue,taskObject.task, deadlineSpan)
     }
 
     const updButton = document.createElement("img");
     updButton.classList.add("update-btn");
     updButton.src = "images/pencil.png";
     updButton.addEventListener('click', (e) => {
-        // updateTask(e, todovalue, tagvalue, deadlineValue)
         updateTask(e,taskObject);
     });
     li.appendChild(updButton);
@@ -62,14 +81,11 @@ function CreateItem() {
     delButton.classList.add("del-button");
     delButton.src = "images/delete.png";
     delButton.addEventListener('click', (e) => {
-        // li.removeChild(span);
-        // li.removeChild(updButton);
         deleteTask(e, taskObject);
     });
     li.appendChild(delButton);
 
     listItems.appendChild(li);
-    // tasks.push(todovalue);
     tasks.push(taskObject);
 
     todoInput.value = "";
@@ -80,7 +96,7 @@ function CreateItem() {
 
 function deleteTask(e, taskObject) {
     const li = e.target.parentElement;
-    const text = li.firstChild.textContent;
+    const text = li.firstChild.nextSibling.textContent;
     if (confirm("Are you sure you want to delete")) {
         // archivedList.push(text);
         archivedList.push(taskObject);
@@ -93,17 +109,6 @@ function deleteTask(e, taskObject) {
         todoalert.innerText = "NOT DELETED";
     }
 }
-
-// function updateTask(e, oldValue, oldTagValue, oldDeadline) {
-//     // Populate the input fields with the current task's values
-//     todoInput.value = oldValue;
-//     tag.value = oldTagValue;
-//     deadlineInput.value = oldDeadline;
-
-//     const li = e.target.parentElement;
-//     li.remove();
-//     tasks = tasks.filter(task => task !== oldValue);
-// }
 
 function updateTask(e, taskObject) {
     // Populate the input fields with the current task's values
@@ -133,6 +138,31 @@ function UndoItem() {
         }
         undoValue = "";
     });
+}
+
+function setReminder(deadline, taskName, deadlineSpan){
+    const currentTime = new Date();
+    const deadlineTime =new Date(deadline);
+
+    deadlineTime.setHours(9,0,0,0);
+
+    if(deadlineTime > currentTime){
+        const timeDifference = deadlineTime-currentTime;
+
+        setTimeout(()=>{
+            reminderSound.play();
+            setTimeout(() => {
+                alert(`Reminder: It's time to work on "${taskName}"!`);
+            }, 500);
+            deadlineSpan.style.color='red';
+
+            setTimeout(()=>{
+                reminderSound.pause();
+                reminderSound.currentTime=0;
+            },10000);
+        },timeDifference);
+
+    }
 }
 
 function renderArchive() {

@@ -30,6 +30,31 @@ body{
     margin-bottom: 20px;
 }
 
+input[type=checkbox] {
+    position: relative;
+      border: 2px solid #000;
+      border-radius: 2px;
+      background: none;
+      cursor: pointer;
+      line-height: 0;
+      margin: 0 .6em 0 0;
+      outline: 0;
+      padding: 0 !important;
+      vertical-align: text-top;
+      height: 20px;
+      width: 20px;
+    opacity: .5;
+  }
+
+input[type=checkbox]:checked {
+    opacity: 1;
+}
+
+label{
+    font-size: 10px;
+    background: transparent;
+}
+
 .todo-body{
     display: flex;
     align-items: center;
@@ -43,7 +68,7 @@ body{
 .todo-body input{
     background: transparent;
     border: none;
-    font-size: 20px;
+    font-size: 15px;
     outline: none;
     padding: 15px 0;
     flex: 1;
@@ -82,7 +107,7 @@ li {
     border-radius: 5px;
   }
 
-ul li::before{
+/* ul li::before{
     content: '';
     position: absolute;
     background-image: url(images/unchecked.png);
@@ -91,7 +116,7 @@ ul li::before{
     height: 28px;
     width: 28px;
     left: 10px;
-}
+} */
 
 ul li.archived{
     color: rgb(59, 34, 2);
