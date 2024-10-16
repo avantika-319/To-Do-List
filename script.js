@@ -12,8 +12,76 @@ const deadlineInput = document.getElementById('todoDeadline');
 const reminderSound = new Audio('notification.wav')
 
 let undoValue = '';
-let tasks = [];
-let archivedList = [];
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let archivedList = JSON.parse(localStorage.getItem('archivedTasks')) ||[];
+
+function saveTaskToLocalStorage(){
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem('archivedTasks', JSON.stringify(archivedList));
+}
+
+function renderLocalStorageTasks(){
+    tasks.forEach(taskObject => {
+        const li = document.createElement("li");
+
+    const checkbox = document.createElement("input");
+    checkbox.type="checkbox";
+    checkbox.name="task";
+    checkbox.value = taskObject.task;
+    checkbox.addEventListener('change', () => {
+        // Mark task as completed
+        if (checkbox.checked) {
+            li.style.textDecoration = "line-through"; 
+            li.style.color = "gray"; 
+        } else {
+            li.style.textDecoration = "none"; 
+            li.style.color = "black";
+        }
+    });
+    li.appendChild(checkbox);
+    li.appendChild(document.createTextNode(taskObject.task));
+    
+    const span = document.createElement("span");
+    if (taskObject.tag !== '') {
+        span.textContent = `${taskObject.tag}`;
+        li.appendChild(span);
+    }
+
+    const deadlineSpan = document.createElement("span");
+    if(taskObject.deadline !== '')
+    {
+        deadlineSpan.textContent =`${taskObject.deadline}`;
+        deadlineSpan.style.color = 'green';
+        li.appendChild(deadlineSpan);
+
+        setReminder(taskObject.deadline,taskObject.task, deadlineSpan)
+    }
+
+    const updButton = document.createElement("img");
+    updButton.classList.add("update-btn");
+    updButton.src = "images/pencil.png";
+    updButton.addEventListener('click', (e) => {
+        updateTask(e,taskObject);
+    });
+    li.appendChild(updButton);
+
+    const delButton = document.createElement("img");
+    delButton.classList.add("del-button");
+    delButton.src = "images/delete.png";
+    delButton.addEventListener('click', (e) => {
+        deleteTask(e, taskObject);
+    });
+    li.appendChild(delButton);
+
+    listItems.appendChild(li);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () =>{
+    renderLocalStorageTasks();
+    renderArchive();
+});
+
 
 function CreateItem() {
     const todovalue = todoInput.value;
@@ -92,6 +160,8 @@ function CreateItem() {
     tag.value = "";
     deadlineInput.value ="";
 
+    saveTaskToLocalStorage();
+
 }
 
 function deleteTask(e, taskObject) {
@@ -104,6 +174,7 @@ function deleteTask(e, taskObject) {
         undoValue = text;
         tasks = tasks.filter(task => task.task !== text)
         li.remove();
+        saveTaskToLocalStorage();
         todoalert.innerText = "";
     } else {
         todoalert.innerText = "NOT DELETED";
@@ -119,6 +190,8 @@ function updateTask(e, taskObject) {
     const li = e.target.parentElement;
     li.remove();
     tasks = tasks.filter(task => task.task !== taskObject.task);
+
+    saveTaskToLocalStorage();
 }
 
 function UndoItem() {
@@ -135,6 +208,7 @@ function UndoItem() {
             tasks.push(undoValue);
             archivedList = archivedList.filter(archive => archive != undoValue)
             renderArchive();
+            saveTaskToLocalStorage();
         }
         undoValue = "";
     });
@@ -171,7 +245,18 @@ function renderArchive() {
         const li = document.createElement("li");
         li.innerHTML = task.task;
         archiveList.appendChild(li);
+
+        const delButton = document.createElement("img");
+        delButton.classList.add("del-button");
+        delButton.src = "images/delete.png";
+        delButton.addEventListener('click', (e) => {
+            li.remove();
+            archivedList = archivedList.filter(archivedTask => archivedTask.task !== task.task);
+            saveTaskToLocalStorage();
+        });
+        li.appendChild(delButton);
     });
+    saveTaskToLocalStorage();
 }
 
 function ToggleArchive() {
